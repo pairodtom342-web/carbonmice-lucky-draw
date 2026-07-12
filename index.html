@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>carbonMICE — Lucky Draw จับรางวัล</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#065DED; --blue2:#4C8DFF; --mint:#35E5C0; --navy:#1A1A2E; --deep-mint:#0FAE8E;
+  --slate:#8A94A6; --line:rgba(255,255,255,.12); --card:rgba(255,255,255,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Sarabun','Inter',sans-serif;color:#fff;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% -10%,#243056 0%,#141a2e 45%,#0d1120 100%);
+}
+.num{font-family:'Inter','Sarabun',sans-serif}
+button{font-family:inherit;cursor:pointer;border:none}
+.hidden{display:none!important}
+
+/* glow orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.35;z-index:0;pointer-events:none}
+.orb1{width:40vw;height:40vw;background:#065DED;top:-15vw;left:-10vw}
+.orb2{width:35vw;height:35vw;background:#35E5C0;bottom:-14vw;right:-8vw;opacity:.28}
+
+#app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;padding:2.4vh 2.6vw}
+
+/* ── header ── */
+header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brandbox{display:flex;align-items:center;gap:14px}
+.logo-chip{background:#fff;border-radius:14px;padding:8px 14px;display:flex;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.logo-chip img{height:5vh;max-height:52px;object-fit:contain;display:block}
+.evt-name{font-size:clamp(18px,2.6vh,30px);font-weight:800;line-height:1.1}
+.evt-sub{font-size:clamp(12px,1.5vh,16px);color:var(--mint);font-weight:700;letter-spacing:.5px}
+.htools{display:flex;gap:10px}
+.tool{background:var(--card);border:1px solid var(--line);color:#fff;border-radius:12px;
+  padding:10px 16px;font-size:clamp(13px,1.7vh,17px);font-weight:700;transition:background .15s}
+.tool:hover{background:rgba(255,255,255,.14)}
+
+/* ── stage ── */
+.stage{flex:1;display:flex;gap:2vw;min-height:0;margin-top:2vh}
+.left{flex:1;display:flex;flex-direction:column;min-width:0}
+.right{width:26vw;max-width:420px;display:flex;flex-direction:column;min-height:0}
+
+/* prize banner */
+.prize-banner{text-align:center;margin-bottom:1.4vh}
+.prize-banner .lbl{font-size:clamp(13px,1.7vh,18px);color:var(--slate);font-weight:700;letter-spacing:1px}
+.prize-banner .val{font-size:clamp(22px,3.6vh,44px);font-weight:800;
+  background:linear-gradient(90deg,var(--mint),var(--blue2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* name display */
+.namebox{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:28px;position:relative;overflow:hidden;
+  box-shadow:inset 0 0 60px rgba(0,0,0,.25)}
+.namebox.rolling{animation:pulseBg 1s ease-in-out infinite}
+@keyframes pulseBg{0%,100%{box-shadow:inset 0 0 60px rgba(6,93,237,.2)}50%{box-shadow:inset 0 0 90px rgba(53,229,192,.3)}}
+.name-main{font-size:clamp(40px,12vh,140px);font-weight:900;line-height:1.02;text-align:center;padding:0 3%;
+  letter-spacing:-1px;word-break:break-word;
+  text-shadow:0 4px 30px rgba(53,229,192,.35)}
+.name-main.win{background:linear-gradient(90deg,#fff,var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:popName .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes popName{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.name-org{font-size:clamp(16px,2.6vh,30px);color:var(--slate);font-weight:700;margin-top:1.4vh;min-height:1.2em}
+.name-placeholder{font-size:clamp(24px,4.5vh,52px);font-weight:800;color:rgba(255,255,255,.5);text-align:center;line-height:1.3}
+.tada{position:absolute;top:5%;font-size:clamp(28px,5vh,60px);opacity:0}
+.tada.on{animation:tada 1.4s ease}
+@keyframes tada{0%{opacity:0;transform:translateY(-20px)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+
+/* controls */
+.controls{margin-top:2vh;display:flex;flex-direction:column;gap:1.4vh}
+.draw-btn{width:100%;min-height:9vh;border-radius:22px;font-size:clamp(24px,4vh,44px);font-weight:900;color:#fff;
+  background:linear-gradient(135deg,#065DED,#0FAE8E);box-shadow:0 10px 34px rgba(6,93,237,.4);
+  transition:transform .08s;letter-spacing:.5px}
+.draw-btn:active{transform:scale(.98)}
+.draw-btn:disabled{opacity:.45;box-shadow:none;cursor:default}
+.draw-btn.rolling{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.decide{display:flex;gap:1.4vw}
+.decide button{flex:1;min-height:8.4vh;border-radius:20px;font-size:clamp(17px,2.7vh,28px);font-weight:800;color:#fff;
+  transition:transform .08s;line-height:1.2;padding:0 10px}
+.decide button:active{transform:scale(.97)}
+.btn-here{background:linear-gradient(135deg,#0FAE8E,#35E5C0);color:#06382F;box-shadow:0 8px 26px rgba(53,229,192,.35)}
+.btn-absent{background:rgba(255,255,255,.08);border:1.5px solid rgba(224,104,75,.6);color:#FF9E85}
+
+/* counters */
+.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:1vw;margin-top:2vh}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4vh 10px;text-align:center}
+.stat .n{font-size:clamp(24px,4.4vh,50px);font-weight:900;line-height:1}
+.stat .t{font-size:clamp(11px,1.5vh,15px);color:var(--slate);font-weight:700;margin-top:.5vh}
+.stat.pool .n{color:var(--mint)} .stat.won .n{color:var(--blue2)}
+.stat.absent .n{color:#FF9E85} .stat.total .n{color:#fff}
+
+/* winners panel */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:2vh 1.4vw;display:flex;flex-direction:column;min-height:0;flex:1}
+.panel h3{font-size:clamp(16px,2.3vh,24px);font-weight:800;margin-bottom:1.4vh;display:flex;align-items:center;gap:8px}
+.panel h3 .cnt{margin-left:auto;background:var(--blue);color:#fff;border-radius:99px;padding:2px 14px;font-size:.75em}
+.winlist{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1vh;padding-right:4px}
+.winlist::-webkit-scrollbar{width:8px}.winlist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+.win-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);
+  border-radius:14px;padding:1.2vh 14px;animation:slideIn .35s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.win-item .rank{font-family:Inter;font-weight:800;color:var(--mint);font-size:clamp(14px,2vh,20px);min-width:1.8em}
+.win-item .who{flex:1;min-width:0}
+.win-item .who b{display:block;font-size:clamp(15px,2.1vh,21px);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win-item .who small{color:var(--slate);font-size:clamp(11px,1.5vh,14px)}
+.win-item .pz{font-size:clamp(11px,1.5vh,14px);color:var(--mint);font-weight:700;text-align:right;max-width:40%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{color:var(--slate);text-align:center;padding:4vh 0;font-size:clamp(14px,2vh,18px)}
+
+/* ── setup / modal ── */
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(8,11,20,.78);display:flex;justify-content:center;align-items:center;padding:3vh 3vw}
+.sheet{background:#171d33;border:1px solid var(--line);border-radius:24px;padding:3vh 2.2vw;width:100%;max-width:760px;max-height:92vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.sheet h2{font-size:clamp(20px,3vh,30px);font-weight:800;margin-bottom:.6vh}
+.sheet .sub{color:var(--slate);font-size:clamp(13px,1.8vh,17px);margin-bottom:2.2vh}
+.field{margin-bottom:1.8vh}
+.field label{display:block;font-weight:700;font-size:clamp(13px,1.8vh,16px);margin-bottom:.7vh}
+.field input[type=text],.field textarea{width:100%;background:rgba(255,255,255,.06);border:1.5px solid var(--line);
+  border-radius:12px;padding:12px 14px;color:#fff;font-family:inherit;font-size:clamp(14px,1.9vh,17px);outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--mint)}
+.field textarea{min-height:26vh;resize:vertical;line-height:1.6}
+.field .hint{color:var(--slate);font-size:12px;margin-top:5px;line-height:1.5}
+.field input[type=file]{color:var(--slate);font-size:14px}
+.logo-prev{height:44px;margin-top:8px;background:#fff;border-radius:8px;padding:4px 8px;display:none}
+.sheet-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:1vh}
+.sbtn{border-radius:14px;padding:14px 24px;font-size:clamp(15px,2vh,19px);font-weight:800;color:#fff}
+.sbtn.primary{background:var(--blue);box-shadow:0 6px 20px rgba(6,93,237,.35);flex:1;min-width:180px}
+.sbtn.ghost{background:rgba(255,255,255,.08);border:1px solid var(--line)}
+.sbtn.danger{background:rgba(224,104,75,.15);border:1px solid rgba(224,104,75,.5);color:#FF9E85}
+.count-note{font-size:clamp(13px,1.8vh,16px);color:var(--mint);font-weight:700;margin-top:1vh}
+
+#fx{position:fixed;inset:0;pointer-events:none;z-index:35}
+.toast{position:fixed;bottom:3vh;left:50%;transform:translateX(-50%);background:#171d33;border:1px solid var(--line);
+  color:#fff;padding:12px 24px;border-radius:14px;font-weight:700;z-index:50;opacity:0;transition:opacity .3s;font-size:clamp(13px,1.8vh,16px)}
+.toast.show{opacity:1}
+
+@media (max-aspect-ratio:1/1){
+  .stage{flex-direction:column} .right{width:100%;max-width:none;max-height:34vh}
+}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div><div class="orb orb2"></div>
+<canvas id="fx"></canvas>
+
+<div id="app">
+  <header>
+    <div class="brandbox">
+      <div class="logo-chip"><img src="assets/logo.png" alt="carbonMICE"></div>
+      <div class="logo-chip" id="evtLogoChip" style="display:none"><img id="evtLogo" alt="event"></div>
+      <div>
+        <div class="evt-name" id="evtName">carbonMICE Lucky Draw</div>
+        <div class="evt-sub">🎁 จับรางวัลผู้โชคดี</div>
+      </div>
+    </div>
+    <div class="htools">
+      <button class="tool" onclick="openSetup()">⚙️ ตั้งค่า / รายชื่อ</button>
+      <button class="tool" id="undoBtn" onclick="undo()" style="display:none">↩️ ย้อนกลับ</button>
+      <button class="tool" onclick="toggleFull()">⛶ เต็มจอ</button>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="left">
+      <div class="prize-banner" id="prizeBanner" style="display:none">
+        <div class="lbl">รางวัล</div><div class="val" id="prizeVal"></div>
+      </div>
+      <div class="namebox" id="namebox">
+        <div class="tada" id="tada">🎉</div>
+        <div class="name-placeholder" id="placeholder">กด "ตั้งค่า / รายชื่อ"<br>เพื่อเริ่มจับรางวัล 🎲</div>
+        <div class="name-main hidden" id="nameMain"></div>
+        <div class="name-org hidden" id="nameOrg"></div>
+      </div>
+
+      <div class="controls">
+        <button class="draw-btn" id="drawBtn" onclick="draw()" disabled>🎲 สุ่มรายชื่อ</button>
+        <div class="decide hidden" id="decide">
+          <button class="btn-here" onclick="resolve('won')">✅ อยู่ในงาน — รับรางวัล</button>
+          <button class="btn-absent" onclick="resolve('absent')">❌ ไม่อยู่ — ตัดชื่อออก</button>
+        </div>
+      </div>
+
+      <div class="counters">
+        <div class="stat pool"><div class="n num" id="cPool">0</div><div class="t">🎯 ยังไม่ได้จับ</div></div>
+        <div class="stat won"><div class="n num" id="cWon">0</div><div class="t">🏆 ได้รางวัลแล้ว</div></div>
+        <div class="stat absent"><div class="n num" id="cAbsent">0</div><div class="t">🚫 ไม่อยู่/ตัดออก</div></div>
+        <div class="stat total"><div class="n num" id="cTotal">0</div><div class="t">👥 ทั้งหมด</div></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>🏆 ผู้ได้รับรางวัล <span class="cnt num" id="winCnt">0</span></h3>
+        <div class="winlist" id="winlist"><div class="empty">ยังไม่มีผู้ได้รับรางวัล</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="overlay hidden" id="setup">
+  <div class="sheet">
+    <h2>⚙️ ตั้งค่าการจับรางวัล</h2>
+    <div class="sub">ใส่ข้อมูลงาน + รายชื่อผู้เข้าร่วม แล้วเริ่มจับรางวัลบนจอ LED ได้เลย</div>
+
+    <div class="field">
+      <label>ชื่องาน</label>
+      <input type="text" id="inEvtName" placeholder="เช่น TTM+ 2026 · carbonMICE">
+    </div>
+    <div class="field">
+      <label>โลโก้งาน (ไม่บังคับ · PNG/JPG)</label>
+      <input type="file" id="inEvtLogo" accept="image/*" onchange="handleLogo(this.files[0])">
+      <img class="logo-prev" id="logoPrev" alt="">
+    </div>
+    <div class="field">
+      <label>ชื่อรางวัลที่กำลังจับ (แสดงเหนือชื่อผู้โชคดี · เปลี่ยนได้ตลอด)</label>
+      <input type="text" id="inPrize" placeholder="เช่น กระเป๋าเดินทาง / บัตรกำนัล 1,000 บาท">
+    </div>
+    <div class="field">
+      <label>รายชื่อผู้เข้าร่วม</label>
+      <textarea id="inPeople" spellcheck="false" placeholder="วางรายชื่อ 1 คนต่อ 1 บรรทัด&#10;ใส่หน่วยงานได้ด้วย คั่นด้วย , หรือ Tab เช่น&#10;สมชาย ใจดี, การไฟฟ้าส่วนภูมิภาค&#10;สมหญิง รักษ์โลก, PEA"></textarea>
+      <div class="hint">รองรับวาง (paste) จาก Excel/Google Sheet ได้เลย · หรืออัปโหลด CSV ด้านล่าง</div>
+      <input type="file" id="inCsv" accept=".csv,.txt" onchange="handleCsv(this.files[0])" style="margin-top:8px">
+      <div class="count-note" id="countNote"></div>
+    </div>
+
+    <div class="sheet-btns">
+      <button class="sbtn primary" onclick="saveSetup()">💾 บันทึก & เริ่มจับรางวัล</button>
+      <button class="sbtn ghost" onclick="closeSetup()">ปิด</button>
+    </div>
+    <div class="sheet-btns" style="margin-top:8px">
+      <button class="sbtn ghost" onclick="resetDraw()">🔄 เริ่มจับรอบใหม่ (คืนทุกคนเข้ากล่อง)</button>
+      <button class="sbtn danger" onclick="clearAll()">🗑️ ล้างข้อมูลทั้งหมด</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const LS='cmice_luckydraw_v1';
+let S={eventName:'',eventLogo:'',prize:'',people:[]};  // people:{id,name,org,status:'pool'|'won'|'absent',prize}
+let history=[];        // สำหรับ undo: {id,prev}
+let current=null;      // คนที่เพิ่งสุ่มได้ ยังไม่ตัดสิน
+let rolling=false, pendingLogo='';
+
+/* ── persistence ── */
+function load(){ try{const d=JSON.parse(localStorage.getItem(LS)); if(d&&d.people) S=d;}catch(e){} }
+function save(){ localStorage.setItem(LS,JSON.stringify(S)); }
+
+/* ── setup ── */
+function openSetup(){
+  $('inEvtName').value=S.eventName||''; $('inPrize').value=S.prize||'';
+  $('inPeople').value=S.people.map(p=>p.org?`${p.name}, ${p.org}`:p.name).join('\n');
+  pendingLogo=S.eventLogo||'';
+  if(S.eventLogo){ $('logoPrev').src=S.eventLogo; $('logoPrev').style.display='inline-block'; }
+  else $('logoPrev').style.display='none';
+  updateCountNote();
+  $('setup').classList.remove('hidden');
+}
+function closeSetup(){ $('setup').classList.add('hidden'); }
+$('inPeople').addEventListener('input',updateCountNote);
+function updateCountNote(){
+  const n=parsePeople($('inPeople').value).length;
+  $('countNote').textContent=n?`พบ ${n} รายชื่อ`:'';
+}
+function parsePeople(txt){
+  const out=[];
+  txt.split('\n').forEach(line=>{
+    line=line.replace(/\r/,'').trim(); if(!line) return;
+    let parts=line.split('\t'); if(parts.length<2) parts=line.split(',');
+    const name=(parts[0]||'').trim();
+    const org=(parts.slice(1).join(',')||'').trim();
+    if(name && !/^(ชื่อ|name|ลำดับ|no\.?|#)$/i.test(name)) out.push({name,org});
+  });
+  return out;
+}
+function handleLogo(f){ if(!f)return; const r=new FileReader();
+  r.onload=()=>{ pendingLogo=r.result; $('logoPrev').src=r.result; $('logoPrev').style.display='inline-block'; };
+  r.readAsDataURL(f); }
+function handleCsv(f){ if(!f)return; const r=new FileReader();
+  r.onload=()=>{ const cur=$('inPeople').value.trim(); $('inPeople').value=(cur?cur+'\n':'')+r.result; updateCountNote(); toast('นำเข้าไฟล์แล้ว'); };
+  r.readAsText(f,'utf-8'); }
+
+function saveSetup(){
+  const fresh=parsePeople($('inPeople').value);
+  if(!fresh.length){ toast('กรุณาใส่รายชื่ออย่างน้อย 1 คน'); return; }
+  // รักษาสถานะเดิมของคนที่ชื่อ+หน่วยงานตรงกัน (กันเผลอบันทึกทับตอนจับไปแล้ว)
+  const prevByKey={}; S.people.forEach(p=>prevByKey[p.name+'|'+p.org]=p);
+  S.eventName=$('inEvtName').value.trim();
+  S.prize=$('inPrize').value.trim();
+  S.eventLogo=pendingLogo||'';
+  S.people=fresh.map((p,i)=>{
+    const old=prevByKey[p.name+'|'+p.org];
+    return {id:i+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+            name:p.name, org:p.org, status:old?old.status:'pool', prize:old?old.prize:''};
+  });
+  history=[]; current=null;
+  save(); render(); closeSetup(); toast('พร้อมจับรางวัล! 🎉');
+}
+function resetDraw(){
+  if(!confirm('คืนทุกคนกลับเข้ากล่อง เริ่มจับรอบใหม่? (ล้างผลรางวัลทั้งหมด)')) return;
+  S.people.forEach(p=>{p.status='pool';p.prize='';}); history=[]; current=null;
+  save(); render(); closeSetup(); toast('รีเซ็ตรอบใหม่แล้ว');
+}
+function clearAll(){
+  if(!confirm('ล้างข้อมูลทั้งหมด (รายชื่อ + ผลรางวัล + ชื่องาน)?')) return;
+  S={eventName:'',eventLogo:'',prize:'',people:[]}; history=[]; current=null;
+  save(); render(); closeSetup(); toast('ล้างข้อมูลแล้ว');
+}
+
+/* ── draw ── */
+function eligible(){ return S.people.filter(p=>p.status==='pool'); }
+function draw(){
+  if(rolling) return;
+  const pool=eligible();
+  if(!pool.length){ toast('จับครบทุกคนแล้ว 🎉 (ไปตั้งค่าเพื่อรีเซ็ต/เพิ่มรายชื่อ)'); return; }
+  rolling=true; current=null;
+  $('decide').classList.add('hidden');
+  $('drawBtn').disabled=true; $('drawBtn').classList.add('rolling');
+  $('namebox').classList.add('rolling');
+  $('placeholder').classList.add('hidden');
+  const nm=$('nameMain'), og=$('nameOrg');
+  nm.classList.remove('hidden','win'); og.classList.remove('hidden');
+  const winner=pool[Math.floor(Math.random()*pool.length)];
+  // สุ่มไล่ชื่อ ชะลอลงเรื่อยๆ
+  let delay=55, elapsed=0, total=2600;
+  tickAudio();
+  (function roll(){
+    const r=pool[Math.floor(Math.random()*pool.length)];
+    nm.textContent=r.name; og.textContent=r.org||' ';
+    elapsed+=delay; delay*=1.11;
+    if(elapsed<total){ setTimeout(roll,delay); }
+    else landOn(winner);
+  })();
+}
+function landOn(w){
+  rolling=false; current=w;
+  $('drawBtn').classList.remove('rolling'); $('namebox').classList.remove('rolling');
+  const nm=$('nameMain'), og=$('nameOrg');
+  nm.textContent=w.name; nm.classList.add('win');
+  og.textContent=w.org||' ';
+  $('decide').classList.remove('hidden');
+  $('drawBtn').disabled=true;
+  dingAudio();
+}
+function resolve(kind){
+  if(!current) return;
+  const p=S.people.find(x=>x.id===current.id); if(!p) return;
+  history.push({id:p.id, prevStatus:p.status, prevPrize:p.prize});
+  if(kind==='won'){ p.status='won'; p.prize=S.prize||''; confetti(); $('tada').className='tada on'; setTimeout(()=>$('tada').className='tada',1400); toast('🎉 ยินดีด้วย! บันทึกผู้ได้รับรางวัลแล้ว'); }
+  else{ p.status='absent'; toast('ตัดชื่อออก (ไม่อยู่ในงาน)'); }
+  current=null; save(); render();
+  $('decide').classList.add('hidden');
+  $('nameMain').classList.add('hidden'); $('nameOrg').classList.add('hidden');
+  $('placeholder').classList.remove('hidden');
+  $('placeholder').innerHTML=eligible().length?'กด "สุ่มรายชื่อ" เพื่อจับคนต่อไป 🎲':'🎉 จับครบทุกคนแล้ว!';
+}
+function undo(){
+  if(!history.length){ toast('ไม่มีรายการให้ย้อนกลับ'); return; }
+  const h=history.pop(); const p=S.people.find(x=>x.id===h.id);
+  if(p){ p.status=h.prevStatus; p.prize=h.prevPrize; }
+  current=null; save(); render();
+  $('decide').classList.add('hidden');
+  $('nameMain').classList.add('hidden'); $('nameOrg').classList.add('hidden');
+  $('placeholder').classList.remove('hidden'); $('placeholder').innerHTML='ย้อนกลับแล้ว · กด "สุ่มรายชื่อ" ต่อได้เลย';
+  toast('ย้อนกลับรายการล่าสุดแล้ว');
+}
+
+/* ── render ── */
+function render(){
+  $('evtName').textContent=S.eventName||'carbonMICE Lucky Draw';
+  if(S.eventLogo){ $('evtLogo').src=S.eventLogo; $('evtLogoChip').style.display='flex'; }
+  else $('evtLogoChip').style.display='none';
+  if(S.prize){ $('prizeBanner').style.display='block'; $('prizeVal').textContent=S.prize; }
+  else $('prizeBanner').style.display='none';
+  const pool=S.people.filter(p=>p.status==='pool').length;
+  const won=S.people.filter(p=>p.status==='won');
+  const absent=S.people.filter(p=>p.status==='absent').length;
+  $('cPool').textContent=pool; $('cWon').textContent=won.length;
+  $('cAbsent').textContent=absent; $('cTotal').textContent=S.people.length;
+  $('winCnt').textContent=won.length;
+  $('drawBtn').disabled=rolling||pool===0;
+  $('undoBtn').style.display=history.length?'block':'none';
+  if(!S.people.length){
+    $('placeholder').classList.remove('hidden'); $('nameMain').classList.add('hidden'); $('nameOrg').classList.add('hidden');
+    $('placeholder').innerHTML='กด "ตั้งค่า / รายชื่อ"<br>เพื่อเริ่มจับรางวัล 🎲';
+  }
+  // winners list (ล่าสุดอยู่บน)
+  const wl=$('winlist');
+  if(!won.length){ wl.innerHTML='<div class="empty">ยังไม่มีผู้ได้รับรางวัล</div>'; }
+  else{
+    wl.innerHTML='';
+    won.slice().reverse().forEach((p,i)=>{
+      const d=document.createElement('div'); d.className='win-item';
+      d.innerHTML=`<span class="rank num">${won.length-i}</span>
+        <span class="who"><b>${esc(p.name)}</b>${p.org?`<small>${esc(p.org)}</small>`:''}</span>
+        ${p.prize?`<span class="pz">🎁 ${esc(p.prize)}</span>`:''}`;
+      wl.appendChild(d);
+    });
+  }
+}
+function esc(s){return String(s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+
+/* ── fullscreen ── */
+function toggleFull(){ if(!document.fullscreenElement){ document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen(); } else document.exitFullscreen&&document.exitFullscreen(); }
+
+/* ── toast ── */
+let toastT=null;
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2400); }
+
+/* ── confetti ── */
+const cv=$('fx'); let ctx,parts=[],raf=null;
+function fit(){ cv.width=innerWidth; cv.height=innerHeight; }
+const CC=['#065DED','#35E5C0','#0FAE8E','#4C8DFF','#FFD166','#fff'];
+function confetti(){
+  fit(); ctx=cv.getContext('2d');
+  for(let i=0;i<220;i++) parts.push({x:innerWidth*(.15+Math.random()*.55),y:innerHeight*.3+Math.random()*40,
+    vx:(Math.random()-.5)*12,vy:-7-Math.random()*11,g:.26+Math.random()*.14,s:6+Math.random()*8,
+    rot:Math.random()*6,vr:(Math.random()-.5)*.5,c:CC[i%CC.length],life:0,max:110+Math.random()*50});
+  if(!raf) tick();
+}
+function tick(){ ctx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.life++;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=Math.max(0,1-p.life/p.max);
+    ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();});
+  parts=parts.filter(p=>p.life<p.max&&p.y<cv.height+40);
+  if(parts.length) raf=requestAnimationFrame(tick); else {ctx.clearRect(0,0,cv.width,cv.height);raf=null;}
+}
+addEventListener('resize',()=>{fit();render();});
+
+/* ── audio ── */
+let ac=null; function actx(){ if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}} return ac; }
+function tickAudio(){ const a=actx(); if(!a)return; let t=0,gap=0.055;
+  while(t<2.6){ const at=a.currentTime+t;const o=a.createOscillator(),g=a.createGain();
+    o.type='square';o.frequency.value=1400;o.connect(g);g.connect(a.destination);
+    g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.06,at+.004);
+    g.gain.exponentialRampToValueAtTime(.0001,at+.035);o.start(at);o.stop(at+.04);
+    t+=gap;gap*=1.11; } }
+function dingAudio(){ const a=actx(); if(!a)return; [523,659,784,1046].forEach((f,i)=>{
+  const o=a.createOscillator(),g=a.createGain();o.type='triangle';o.frequency.value=f;o.connect(g);g.connect(a.destination);
+  const t=a.currentTime+i*.11;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.25,t+.02);
+  g.gain.exponentialRampToValueAtTime(.0001,t+.4);o.start(t);o.stop(t+.4);}); }
+
+/* keyboard: Space = draw */
+addEventListener('keydown',e=>{ if(e.code==='Space'&&!$('setup').classList.contains('show')&&$('setup').classList.contains('hidden')){ e.preventDefault(); if(!$('drawBtn').disabled) draw(); } });
+
+load(); render();
+if(!S.people.length) openSetup();
+</script>
+</body>
+</html>
