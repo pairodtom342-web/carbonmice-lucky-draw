@@ -43,7 +43,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
 /* day tabs */
 .daytabs{display:flex;gap:10px;margin-top:1.6vh;flex-wrap:wrap}
 .daytab{background:var(--card);border:1px solid var(--line);color:#cdd5e5;border-radius:12px;
-  padding:9px 18px;font-size:clamp(13px,1.8vh,17px);font-weight:700;line-height:1.15;text-align:center}
+  padding:9px 18px;font-size:clamp(13px,1.8vh,17px);font-weight:700;line-height:1.4;text-align:center}
 .daytab small{display:block;font-size:.72em;color:var(--slate);font-weight:600}
 .daytab.active{background:linear-gradient(135deg,#065DED,#0FAE8E);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(6,93,237,.3)}
 .daytab.active small{color:rgba(255,255,255,.85)}
@@ -55,7 +55,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
 
 .prize-banner{text-align:center;margin-bottom:1.2vh}
 .prize-banner .lbl{font-size:clamp(13px,1.7vh,18px);color:var(--slate);font-weight:700;letter-spacing:1px}
-.prize-banner .val{font-size:clamp(22px,3.4vh,42px);font-weight:800;
+.prize-banner .val{font-size:clamp(22px,3.4vh,42px);font-weight:800;line-height:1.32;padding-bottom:.12em;
   background:linear-gradient(90deg,var(--mint),var(--blue2));-webkit-background-clip:text;background-clip:text;color:transparent}
 
 .namebox{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
@@ -63,12 +63,12 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
   box-shadow:inset 0 0 60px rgba(0,0,0,.25)}
 .namebox.rolling{animation:pulseBg 1s ease-in-out infinite}
 @keyframes pulseBg{0%,100%{box-shadow:inset 0 0 60px rgba(6,93,237,.2)}50%{box-shadow:inset 0 0 90px rgba(53,229,192,.3)}}
-.name-main{font-size:clamp(40px,12vh,140px);font-weight:900;line-height:1.02;text-align:center;padding:0 3%;
+.name-main{font-size:clamp(40px,12vh,140px);font-weight:900;line-height:1.34;text-align:center;padding:.06em 3% .2em;
   letter-spacing:-1px;word-break:break-word;text-shadow:0 4px 30px rgba(53,229,192,.35)}
 .name-main.win{background:linear-gradient(90deg,#fff,var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent;
   animation:popName .5s cubic-bezier(.2,1.4,.4,1)}
 @keyframes popName{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-.name-org{font-size:clamp(16px,2.6vh,30px);color:var(--slate);font-weight:700;margin-top:1.2vh;min-height:1.2em}
+.name-org{font-size:clamp(16px,2.6vh,30px);color:var(--slate);font-weight:700;margin-top:1.2vh;min-height:1.2em;line-height:1.4;padding-bottom:.08em}
 .name-placeholder{font-size:clamp(22px,4vh,50px);font-weight:800;color:rgba(255,255,255,.5);text-align:center;line-height:1.35;padding:0 6%}
 .tada{position:absolute;top:5%;font-size:clamp(28px,5vh,60px);opacity:0}
 .tada.on{animation:tada 1.4s ease}
@@ -112,7 +112,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
 @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 .win-item .rank{font-family:Inter;font-weight:800;color:var(--mint);font-size:clamp(14px,2vh,20px);min-width:1.8em}
 .win-item .who{flex:1;min-width:0}
-.win-item .who b{display:block;font-size:clamp(15px,2.1vh,21px);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win-item .who b{display:block;font-size:clamp(15px,2.1vh,21px);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.55;padding-bottom:.06em}
 .win-item .who small{color:var(--slate);font-size:clamp(11px,1.5vh,14px)}
 .win-item .pz{font-size:clamp(11px,1.5vh,14px);color:var(--mint);font-weight:700;text-align:right;max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{color:var(--slate);text-align:center;padding:4vh 0;font-size:clamp(14px,2vh,18px)}
