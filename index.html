@@ -11,7 +11,7 @@
   --blue:#065DED; --blue2:#4C8DFF; --mint:#35E5C0; --navy:#1A1A2E; --deep-mint:#0FAE8E;
   --slate:#8A94A6; --line:rgba(255,255,255,.12); --card:rgba(255,255,255,.06);
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 html,body{height:100%}
 body{
   font-family:'Sarabun','Inter',sans-serif;color:#fff;overflow:hidden;
@@ -21,57 +21,67 @@ body{
 button{font-family:inherit;cursor:pointer;border:none}
 .hidden{display:none!important}
 
-/* glow orbs */
 .orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.35;z-index:0;pointer-events:none}
 .orb1{width:40vw;height:40vw;background:#065DED;top:-15vw;left:-10vw}
 .orb2{width:35vw;height:35vw;background:#35E5C0;bottom:-14vw;right:-8vw;opacity:.28}
 
-#app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;padding:2.4vh 2.6vw}
+#app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;padding:2.2vh 2.6vw}
 
-/* ── header ── */
+/* header */
 header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brandbox{display:flex;align-items:center;gap:14px}
+.brandbox{display:flex;align-items:center;gap:14px;min-width:0}
 .logo-chip{background:#fff;border-radius:14px;padding:8px 14px;display:flex;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3)}
 .logo-chip img{height:5vh;max-height:52px;object-fit:contain;display:block}
-.evt-name{font-size:clamp(18px,2.6vh,30px);font-weight:800;line-height:1.1}
-.evt-sub{font-size:clamp(12px,1.5vh,16px);color:var(--mint);font-weight:700;letter-spacing:.5px}
-.htools{display:flex;gap:10px}
+.evt-name{font-size:clamp(18px,2.6vh,30px);font-weight:800;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+.evt-sub{font-size:clamp(12px,1.5vh,16px);color:var(--mint);font-weight:700;letter-spacing:.3px}
+.htools{display:flex;gap:10px;align-items:center}
+.syncpill{font-size:clamp(11px,1.5vh,14px);font-weight:700;color:var(--slate);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;white-space:nowrap}
 .tool{background:var(--card);border:1px solid var(--line);color:#fff;border-radius:12px;
   padding:10px 16px;font-size:clamp(13px,1.7vh,17px);font-weight:700;transition:background .15s}
 .tool:hover{background:rgba(255,255,255,.14)}
 
-/* ── stage ── */
-.stage{flex:1;display:flex;gap:2vw;min-height:0;margin-top:2vh}
+/* day tabs */
+.daytabs{display:flex;gap:10px;margin-top:1.6vh;flex-wrap:wrap}
+.daytab{background:var(--card);border:1px solid var(--line);color:#cdd5e5;border-radius:12px;
+  padding:9px 18px;font-size:clamp(13px,1.8vh,17px);font-weight:700;line-height:1.15;text-align:center}
+.daytab small{display:block;font-size:.72em;color:var(--slate);font-weight:600}
+.daytab.active{background:linear-gradient(135deg,#065DED,#0FAE8E);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(6,93,237,.3)}
+.daytab.active small{color:rgba(255,255,255,.85)}
+
+/* stage */
+.stage{flex:1;display:flex;gap:2vw;min-height:0;margin-top:1.6vh}
 .left{flex:1;display:flex;flex-direction:column;min-width:0}
 .right{width:26vw;max-width:420px;display:flex;flex-direction:column;min-height:0}
 
-/* prize banner */
-.prize-banner{text-align:center;margin-bottom:1.4vh}
+.prize-banner{text-align:center;margin-bottom:1.2vh}
 .prize-banner .lbl{font-size:clamp(13px,1.7vh,18px);color:var(--slate);font-weight:700;letter-spacing:1px}
-.prize-banner .val{font-size:clamp(22px,3.6vh,44px);font-weight:800;
+.prize-banner .val{font-size:clamp(22px,3.4vh,42px);font-weight:800;
   background:linear-gradient(90deg,var(--mint),var(--blue2));-webkit-background-clip:text;background-clip:text;color:transparent}
 
-/* name display */
 .namebox{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
   background:var(--card);border:1px solid var(--line);border-radius:28px;position:relative;overflow:hidden;
   box-shadow:inset 0 0 60px rgba(0,0,0,.25)}
 .namebox.rolling{animation:pulseBg 1s ease-in-out infinite}
 @keyframes pulseBg{0%,100%{box-shadow:inset 0 0 60px rgba(6,93,237,.2)}50%{box-shadow:inset 0 0 90px rgba(53,229,192,.3)}}
 .name-main{font-size:clamp(40px,12vh,140px);font-weight:900;line-height:1.02;text-align:center;padding:0 3%;
-  letter-spacing:-1px;word-break:break-word;
-  text-shadow:0 4px 30px rgba(53,229,192,.35)}
+  letter-spacing:-1px;word-break:break-word;text-shadow:0 4px 30px rgba(53,229,192,.35)}
 .name-main.win{background:linear-gradient(90deg,#fff,var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent;
   animation:popName .5s cubic-bezier(.2,1.4,.4,1)}
 @keyframes popName{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-.name-org{font-size:clamp(16px,2.6vh,30px);color:var(--slate);font-weight:700;margin-top:1.4vh;min-height:1.2em}
-.name-placeholder{font-size:clamp(24px,4.5vh,52px);font-weight:800;color:rgba(255,255,255,.5);text-align:center;line-height:1.3}
+.name-org{font-size:clamp(16px,2.6vh,30px);color:var(--slate);font-weight:700;margin-top:1.2vh;min-height:1.2em}
+.name-placeholder{font-size:clamp(22px,4vh,50px);font-weight:800;color:rgba(255,255,255,.5);text-align:center;line-height:1.35;padding:0 6%}
 .tada{position:absolute;top:5%;font-size:clamp(28px,5vh,60px);opacity:0}
 .tada.on{animation:tada 1.4s ease}
 @keyframes tada{0%{opacity:0;transform:translateY(-20px)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
 
 /* controls */
-.controls{margin-top:2vh;display:flex;flex-direction:column;gap:1.4vh}
-.draw-btn{width:100%;min-height:9vh;border-radius:22px;font-size:clamp(24px,4vh,44px);font-weight:900;color:#fff;
+.controls{margin-top:1.8vh;display:flex;flex-direction:column;gap:1.2vh}
+.prize-pick{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap}
+.prize-pick label{color:var(--slate);font-weight:700;font-size:clamp(13px,1.8vh,17px)}
+.prize-pick select{background:var(--card);border:1.5px solid var(--line);color:#fff;border-radius:12px;
+  padding:9px 14px;font-size:clamp(14px,1.9vh,18px);font-family:inherit;outline:none;max-width:60vw}
+.prize-pick select:focus{border-color:var(--mint)}
+.draw-btn{width:100%;min-height:8.4vh;border-radius:22px;font-size:clamp(24px,3.8vh,42px);font-weight:900;color:#fff;
   background:linear-gradient(135deg,#065DED,#0FAE8E);box-shadow:0 10px 34px rgba(6,93,237,.4);
   transition:transform .08s;letter-spacing:.5px}
 .draw-btn:active{transform:scale(.98)}
@@ -79,101 +89,105 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .draw-btn.rolling{animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
 .decide{display:flex;gap:1.4vw}
-.decide button{flex:1;min-height:8.4vh;border-radius:20px;font-size:clamp(17px,2.7vh,28px);font-weight:800;color:#fff;
+.decide button{flex:1;min-height:7.8vh;border-radius:20px;font-size:clamp(17px,2.6vh,27px);font-weight:800;color:#fff;
   transition:transform .08s;line-height:1.2;padding:0 10px}
 .decide button:active{transform:scale(.97)}
 .btn-here{background:linear-gradient(135deg,#0FAE8E,#35E5C0);color:#06382F;box-shadow:0 8px 26px rgba(53,229,192,.35)}
 .btn-absent{background:rgba(255,255,255,.08);border:1.5px solid rgba(224,104,75,.6);color:#FF9E85}
 
-/* counters */
-.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:1vw;margin-top:2vh}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4vh 10px;text-align:center}
-.stat .n{font-size:clamp(24px,4.4vh,50px);font-weight:900;line-height:1}
+.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:1vw;margin-top:1.6vh}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.2vh 10px;text-align:center}
+.stat .n{font-size:clamp(24px,4.2vh,48px);font-weight:900;line-height:1}
 .stat .t{font-size:clamp(11px,1.5vh,15px);color:var(--slate);font-weight:700;margin-top:.5vh}
 .stat.pool .n{color:var(--mint)} .stat.won .n{color:var(--blue2)}
 .stat.absent .n{color:#FF9E85} .stat.total .n{color:#fff}
 
-/* winners panel */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:2vh 1.4vw;display:flex;flex-direction:column;min-height:0;flex:1}
-.panel h3{font-size:clamp(16px,2.3vh,24px);font-weight:800;margin-bottom:1.4vh;display:flex;align-items:center;gap:8px}
+.panel h3{font-size:clamp(16px,2.3vh,24px);font-weight:800;margin-bottom:1.2vh;display:flex;align-items:center;gap:8px}
 .panel h3 .cnt{margin-left:auto;background:var(--blue);color:#fff;border-radius:99px;padding:2px 14px;font-size:.75em}
 .winlist{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1vh;padding-right:4px}
 .winlist::-webkit-scrollbar{width:8px}.winlist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
 .win-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);
-  border-radius:14px;padding:1.2vh 14px;animation:slideIn .35s ease}
+  border-radius:14px;padding:1.1vh 14px;animation:slideIn .35s ease}
 @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 .win-item .rank{font-family:Inter;font-weight:800;color:var(--mint);font-size:clamp(14px,2vh,20px);min-width:1.8em}
 .win-item .who{flex:1;min-width:0}
 .win-item .who b{display:block;font-size:clamp(15px,2.1vh,21px);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .win-item .who small{color:var(--slate);font-size:clamp(11px,1.5vh,14px)}
-.win-item .pz{font-size:clamp(11px,1.5vh,14px);color:var(--mint);font-weight:700;text-align:right;max-width:40%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win-item .pz{font-size:clamp(11px,1.5vh,14px);color:var(--mint);font-weight:700;text-align:right;max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{color:var(--slate);text-align:center;padding:4vh 0;font-size:clamp(14px,2vh,18px)}
 
-/* ── setup / modal ── */
-.overlay{position:fixed;inset:0;z-index:40;background:rgba(8,11,20,.78);display:flex;justify-content:center;align-items:center;padding:3vh 3vw}
-.sheet{background:#171d33;border:1px solid var(--line);border-radius:24px;padding:3vh 2.2vw;width:100%;max-width:760px;max-height:92vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.sheet h2{font-size:clamp(20px,3vh,30px);font-weight:800;margin-bottom:.6vh}
-.sheet .sub{color:var(--slate);font-size:clamp(13px,1.8vh,17px);margin-bottom:2.2vh}
-.field{margin-bottom:1.8vh}
-.field label{display:block;font-weight:700;font-size:clamp(13px,1.8vh,16px);margin-bottom:.7vh}
-.field input[type=text],.field textarea{width:100%;background:rgba(255,255,255,.06);border:1.5px solid var(--line);
-  border-radius:12px;padding:12px 14px;color:#fff;font-family:inherit;font-size:clamp(14px,1.9vh,17px);outline:none}
-.field input:focus,.field textarea:focus{border-color:var(--mint)}
-.field textarea{min-height:26vh;resize:vertical;line-height:1.6}
-.field .hint{color:var(--slate);font-size:12px;margin-top:5px;line-height:1.5}
-.field input[type=file]{color:var(--slate);font-size:14px}
-.logo-prev{height:44px;margin-top:8px;background:#fff;border-radius:8px;padding:4px 8px;display:none}
-.sheet-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:1vh}
-.sbtn{border-radius:14px;padding:14px 24px;font-size:clamp(15px,2vh,19px);font-weight:800;color:#fff}
-.sbtn.primary{background:var(--blue);box-shadow:0 6px 20px rgba(6,93,237,.35);flex:1;min-width:180px}
-.sbtn.ghost{background:rgba(255,255,255,.08);border:1px solid var(--line)}
-.sbtn.danger{background:rgba(224,104,75,.15);border:1px solid rgba(224,104,75,.5);color:#FF9E85}
-.count-note{font-size:clamp(13px,1.8vh,16px);color:var(--mint);font-weight:700;margin-top:1vh}
+@media (max-aspect-ratio:1/1){
+  .stage{flex-direction:column} .right{width:100%;max-width:none;max-height:32vh}
+}
+
+/* loading / error screens */
+.center-screen{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;padding:30px;text-align:center;
+  background:radial-gradient(120% 90% at 50% -10%,#243056 0%,#141a2e 45%,#0d1120 100%)}
+.center-screen .cl{background:#fff;border-radius:16px;padding:12px 22px}.center-screen .cl img{height:44px;display:block}
+.center-screen h1{font-size:clamp(22px,4vh,34px);font-weight:800}
+.center-screen p{color:var(--slate);font-size:clamp(15px,2.2vh,19px);line-height:1.6;max-width:520px}
+.bigspin{width:42px;height:42px;border:4px solid rgba(255,255,255,.2);border-top-color:var(--mint);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 
 #fx{position:fixed;inset:0;pointer-events:none;z-index:35}
 .toast{position:fixed;bottom:3vh;left:50%;transform:translateX(-50%);background:#171d33;border:1px solid var(--line);
   color:#fff;padding:12px 24px;border-radius:14px;font-weight:700;z-index:50;opacity:0;transition:opacity .3s;font-size:clamp(13px,1.8vh,16px)}
 .toast.show{opacity:1}
-
-@media (max-aspect-ratio:1/1){
-  .stage{flex-direction:column} .right{width:100%;max-width:none;max-height:34vh}
-}
 </style>
 </head>
 <body>
 <div class="orb orb1"></div><div class="orb orb2"></div>
 <canvas id="fx"></canvas>
 
-<div id="app">
+<!-- LOADING -->
+<div class="center-screen" id="loading">
+  <div class="cl"><img src="assets/logo.png" alt="carbonMICE"></div>
+  <div class="bigspin"></div>
+  <p>กำลังโหลดข้อมูลงาน…</p>
+</div>
+
+<!-- ERROR (no event / not found) -->
+<div class="center-screen hidden" id="errscreen">
+  <div class="cl"><img src="assets/logo.png" alt="carbonMICE"></div>
+  <h1 id="errTitle">ไม่พบข้อมูลงาน</h1>
+  <p id="errMsg">ลิงก์นี้ไม่มีรหัสงาน หรือยังไม่ได้ตั้งค่าในระบบ<br>กรุณาติดต่อทีมงาน carbonMICE เพื่อขอลิงก์จับรางวัลของงาน</p>
+</div>
+
+<!-- MAIN -->
+<div id="app" class="hidden">
   <header>
     <div class="brandbox">
       <div class="logo-chip"><img src="assets/logo.png" alt="carbonMICE"></div>
       <div class="logo-chip" id="evtLogoChip" style="display:none"><img id="evtLogo" alt="event"></div>
-      <div>
+      <div style="min-width:0">
         <div class="evt-name" id="evtName">carbonMICE Lucky Draw</div>
         <div class="evt-sub">🎁 จับรางวัลผู้โชคดี</div>
       </div>
     </div>
     <div class="htools">
-      <button class="tool" onclick="openSetup()">⚙️ ตั้งค่า / รายชื่อ</button>
+      <span class="syncpill" id="syncPill">•</span>
       <button class="tool" id="undoBtn" onclick="undo()" style="display:none">↩️ ย้อนกลับ</button>
       <button class="tool" onclick="toggleFull()">⛶ เต็มจอ</button>
     </div>
   </header>
 
+  <div class="daytabs" id="daytabs"></div>
+
   <div class="stage">
     <div class="left">
-      <div class="prize-banner" id="prizeBanner" style="display:none">
-        <div class="lbl">รางวัล</div><div class="val" id="prizeVal"></div>
-      </div>
       <div class="namebox" id="namebox">
         <div class="tada" id="tada">🎉</div>
-        <div class="name-placeholder" id="placeholder">กด "ตั้งค่า / รายชื่อ"<br>เพื่อเริ่มจับรางวัล 🎲</div>
+        <div class="name-placeholder" id="placeholder">กด “สุ่มรายชื่อ” เพื่อเริ่มจับรางวัล 🎲</div>
         <div class="name-main hidden" id="nameMain"></div>
         <div class="name-org hidden" id="nameOrg"></div>
       </div>
 
       <div class="controls">
+        <div class="prize-pick" id="prizePick" style="display:none">
+          <label>🎁 รางวัลที่กำลังจับ:</label>
+          <select id="prizeSel" onchange="onPrizeChange()"></select>
+        </div>
         <button class="draw-btn" id="drawBtn" onclick="draw()" disabled>🎲 สุ่มรายชื่อ</button>
         <div class="decide hidden" id="decide">
           <button class="btn-here" onclick="resolve('won')">✅ อยู่ในงาน — รับรางวัล</button>
@@ -185,232 +199,262 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
         <div class="stat pool"><div class="n num" id="cPool">0</div><div class="t">🎯 ยังไม่ได้จับ</div></div>
         <div class="stat won"><div class="n num" id="cWon">0</div><div class="t">🏆 ได้รางวัลแล้ว</div></div>
         <div class="stat absent"><div class="n num" id="cAbsent">0</div><div class="t">🚫 ไม่อยู่/ตัดออก</div></div>
-        <div class="stat total"><div class="n num" id="cTotal">0</div><div class="t">👥 ทั้งหมด</div></div>
+        <div class="stat total"><div class="n num" id="cTotal">0</div><div class="t">👥 ทั้งหมดวันนี้</div></div>
       </div>
     </div>
 
     <div class="right">
       <div class="panel">
-        <h3>🏆 ผู้ได้รับรางวัล <span class="cnt num" id="winCnt">0</span></h3>
+        <h3>🏆 ผู้ได้รับรางวัล <span style="font-size:.6em;color:var(--slate);font-weight:700" id="winDay"></span> <span class="cnt num" id="winCnt">0</span></h3>
         <div class="winlist" id="winlist"><div class="empty">ยังไม่มีผู้ได้รับรางวัล</div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- SETUP -->
-<div class="overlay hidden" id="setup">
-  <div class="sheet">
-    <h2>⚙️ ตั้งค่าการจับรางวัล</h2>
-    <div class="sub">ใส่ข้อมูลงาน + รายชื่อผู้เข้าร่วม แล้วเริ่มจับรางวัลบนจอ LED ได้เลย</div>
-
-    <div class="field">
-      <label>ชื่องาน</label>
-      <input type="text" id="inEvtName" placeholder="เช่น TTM+ 2026 · carbonMICE">
-    </div>
-    <div class="field">
-      <label>โลโก้งาน (ไม่บังคับ · PNG/JPG)</label>
-      <input type="file" id="inEvtLogo" accept="image/*" onchange="handleLogo(this.files[0])">
-      <img class="logo-prev" id="logoPrev" alt="">
-    </div>
-    <div class="field">
-      <label>ชื่อรางวัลที่กำลังจับ (แสดงเหนือชื่อผู้โชคดี · เปลี่ยนได้ตลอด)</label>
-      <input type="text" id="inPrize" placeholder="เช่น กระเป๋าเดินทาง / บัตรกำนัล 1,000 บาท">
-    </div>
-    <div class="field">
-      <label>รายชื่อผู้เข้าร่วม</label>
-      <textarea id="inPeople" spellcheck="false" placeholder="วางรายชื่อ 1 คนต่อ 1 บรรทัด&#10;ใส่หน่วยงานได้ด้วย คั่นด้วย , หรือ Tab เช่น&#10;สมชาย ใจดี, การไฟฟ้าส่วนภูมิภาค&#10;สมหญิง รักษ์โลก, PEA"></textarea>
-      <div class="hint">รองรับวาง (paste) จาก Excel/Google Sheet ได้เลย · หรืออัปโหลด CSV ด้านล่าง</div>
-      <input type="file" id="inCsv" accept=".csv,.txt" onchange="handleCsv(this.files[0])" style="margin-top:8px">
-      <div class="count-note" id="countNote"></div>
-    </div>
-
-    <div class="sheet-btns">
-      <button class="sbtn primary" onclick="saveSetup()">💾 บันทึก & เริ่มจับรางวัล</button>
-      <button class="sbtn ghost" onclick="closeSetup()">ปิด</button>
-    </div>
-    <div class="sheet-btns" style="margin-top:8px">
-      <button class="sbtn ghost" onclick="resetDraw()">🔄 เริ่มจับรอบใหม่ (คืนทุกคนเข้ากล่อง)</button>
-      <button class="sbtn danger" onclick="clearAll()">🗑️ ล้างข้อมูลทั้งหมด</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
-const LS='cmice_luckydraw_v1';
-let S={eventName:'',eventLogo:'',prize:'',people:[]};  // people:{id,name,org,status:'pool'|'won'|'absent',prize}
-let history=[];        // สำหรับ undo: {id,prev}
-let current=null;      // คนที่เพิ่งสุ่มได้ ยังไม่ตัดสิน
-let rolling=false, pendingLogo='';
+const CFG=window.CMLD_CONFIG||{};
+const EVENT_ID=new URLSearchParams(location.search).get('event')||'';
+const LS='cmld_state_'+EVENT_ID;      // สถานะการจับ (local-first) ต่อ event
+const LS_DAY='cmld_curday_'+EVENT_ID; // วันที่เลือกล่าสุด
 
-/* ── persistence ── */
-function load(){ try{const d=JSON.parse(localStorage.getItem(LS)); if(d&&d.people) S=d;}catch(e){} }
-function save(){ localStorage.setItem(LS,JSON.stringify(S)); }
+let EV=null;              // config งานจาก backend
+let ST={days:{}};         // สถานะ local: {days:{[dayId]:{people:[{key,name,org,status,prize,ts}]}}}
+let curDay=null;          // dayId ที่กำลังเล่น
+let history=[];           // undo (เฉพาะวันปัจจุบัน)
+let current=null, rolling=false;
 
-/* ── setup ── */
-function openSetup(){
-  $('inEvtName').value=S.eventName||''; $('inPrize').value=S.prize||'';
-  $('inPeople').value=S.people.map(p=>p.org?`${p.name}, ${p.org}`:p.name).join('\n');
-  pendingLogo=S.eventLogo||'';
-  if(S.eventLogo){ $('logoPrev').src=S.eventLogo; $('logoPrev').style.display='inline-block'; }
-  else $('logoPrev').style.display='none';
-  updateCountNote();
-  $('setup').classList.remove('hidden');
+/* ── boot ── */
+init();
+async function init(){
+  if(!EVENT_ID){ showError('ไม่พบรหัสงานในลิงก์','ลิงก์นี้ไม่มีรหัสงาน (event id)<br>กรุณาติดต่อทีมงาน carbonMICE เพื่อขอลิงก์จับรางวัลของงาน'); return; }
+  loadLocal();
+  try{
+    const r=await apiGet('getEvent&id='+encodeURIComponent(EVENT_ID));
+    if(r.error||!r.event) throw new Error(r.error||'not found');
+    EV=r.event;
+    hydrate();                       // ผสาน config เข้ากับ state local
+    $('loading').classList.add('hidden'); $('app').classList.remove('hidden');
+    render();
+  }catch(e){
+    // ต่อ backend ไม่ได้ แต่มี state local ของ event นี้ค้างอยู่ → ให้เล่นต่อแบบ offline
+    if(ST && Object.keys(ST.days).length && EVLocalName()){
+      EV={id:EVENT_ID,name:localStorage.getItem(LS+'_name')||'carbonMICE Lucky Draw',logo:localStorage.getItem(LS+'_logo')||'',prizes:JSON.parse(localStorage.getItem(LS+'_prizes')||'[]'),days:JSON.parse(localStorage.getItem(LS+'_days')||'[]')};
+      const saved=localStorage.getItem(LS_DAY);
+      curDay=(EV.days||[]).some(d=>d.id===saved)?saved:((EV.days||[])[0]&&EV.days[0].id);
+      $('loading').classList.add('hidden'); $('app').classList.remove('hidden'); render(); setSync('offline');
+      // มีข้อมูลค้างที่ยังไม่ sync → ลองดันขึ้นเมื่อเน็ตกลับ
+      Object.keys(ST.days).forEach(did=>{ if(dayPeople(did).some(p=>p.status==='won')) dirtyDays[did]=true; });
+      if(Object.keys(dirtyDays).length){ clearTimeout(syncT); syncT=setTimeout(flushSync,5000); }
+      toast('เชื่อม backend ไม่ได้ — เล่นต่อแบบออฟไลน์ (ข้อมูลจะ sync เมื่อเน็ตกลับมา)');
+    } else {
+      showError('ไม่พบข้อมูลงาน','ไม่พบงานรหัสนี้ หรือยังไม่ได้ตั้งค่าในระบบ<br>กรุณาติดต่อทีมงาน carbonMICE');
+    }
+  }
 }
-function closeSetup(){ $('setup').classList.add('hidden'); }
-$('inPeople').addEventListener('input',updateCountNote);
-function updateCountNote(){
-  const n=parsePeople($('inPeople').value).length;
-  $('countNote').textContent=n?`พบ ${n} รายชื่อ`:'';
-}
-function parsePeople(txt){
-  const out=[];
-  txt.split('\n').forEach(line=>{
-    line=line.replace(/\r/,'').trim(); if(!line) return;
-    let parts=line.split('\t'); if(parts.length<2) parts=line.split(',');
-    const name=(parts[0]||'').trim();
-    const org=(parts.slice(1).join(',')||'').trim();
-    if(name && !/^(ชื่อ|name|ลำดับ|no\.?|#)$/i.test(name)) out.push({name,org});
+function EVLocalName(){ return localStorage.getItem(LS+'_name'); }
+function showError(t,m){ $('loading').classList.add('hidden'); $('app').classList.add('hidden');
+  $('errscreen').classList.remove('hidden'); $('errTitle').textContent=t; $('errMsg').innerHTML=m; }
+
+/* ── local persistence ── */
+function loadLocal(){ try{const d=JSON.parse(localStorage.getItem(LS)); if(d&&d.days) ST=d;}catch(e){} }
+function saveLocal(){ localStorage.setItem(LS,JSON.stringify(ST)); }
+
+// ผสาน config (แหล่งความจริงเรื่องรายชื่อ) เข้ากับสถานะที่จับไปแล้ว (local)
+function hydrate(){
+  // cache config เผื่อ offline
+  localStorage.setItem(LS+'_name',EV.name||'');
+  localStorage.setItem(LS+'_logo',EV.logo||'');
+  localStorage.setItem(LS+'_prizes',JSON.stringify(EV.prizes||[]));
+  localStorage.setItem(LS+'_days',JSON.stringify(EV.days||[]));
+  const newDays={};
+  (EV.days||[]).forEach(d=>{
+    const prev=(ST.days[d.id]&&ST.days[d.id].people)||[];
+    const prevByKey={}; prev.forEach(p=>prevByKey[p.key]=p);
+    const people=(d.people||[]).map((p,i)=>{
+      const key=(p.name||'')+'|'+(p.org||'');
+      const old=prevByKey[key];
+      return {key:key,name:p.name,org:p.org||'',
+        status:old?old.status:'pool', prize:old?old.prize:'', ts:old?old.ts:''};
+    });
+    newDays[d.id]={people:people};
   });
-  return out;
+  ST.days=newDays; saveLocal();
+  // เลือกวัน
+  const saved=localStorage.getItem(LS_DAY);
+  curDay=(EV.days||[]).some(d=>d.id===saved)?saved:((EV.days||[])[0]&&EV.days[0].id);
 }
-function handleLogo(f){ if(!f)return; const r=new FileReader();
-  r.onload=()=>{ pendingLogo=r.result; $('logoPrev').src=r.result; $('logoPrev').style.display='inline-block'; };
-  r.readAsDataURL(f); }
-function handleCsv(f){ if(!f)return; const r=new FileReader();
-  r.onload=()=>{ const cur=$('inPeople').value.trim(); $('inPeople').value=(cur?cur+'\n':'')+r.result; updateCountNote(); toast('นำเข้าไฟล์แล้ว'); };
-  r.readAsText(f,'utf-8'); }
 
-function saveSetup(){
-  const fresh=parsePeople($('inPeople').value);
-  if(!fresh.length){ toast('กรุณาใส่รายชื่ออย่างน้อย 1 คน'); return; }
-  // รักษาสถานะเดิมของคนที่ชื่อ+หน่วยงานตรงกัน (กันเผลอบันทึกทับตอนจับไปแล้ว)
-  const prevByKey={}; S.people.forEach(p=>prevByKey[p.name+'|'+p.org]=p);
-  S.eventName=$('inEvtName').value.trim();
-  S.prize=$('inPrize').value.trim();
-  S.eventLogo=pendingLogo||'';
-  S.people=fresh.map((p,i)=>{
-    const old=prevByKey[p.name+'|'+p.org];
-    return {id:i+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
-            name:p.name, org:p.org, status:old?old.status:'pool', prize:old?old.prize:''};
-  });
-  history=[]; current=null;
-  save(); render(); closeSetup(); toast('พร้อมจับรางวัล! 🎉');
-}
-function resetDraw(){
-  if(!confirm('คืนทุกคนกลับเข้ากล่อง เริ่มจับรอบใหม่? (ล้างผลรางวัลทั้งหมด)')) return;
-  S.people.forEach(p=>{p.status='pool';p.prize='';}); history=[]; current=null;
-  save(); render(); closeSetup(); toast('รีเซ็ตรอบใหม่แล้ว');
-}
-function clearAll(){
-  if(!confirm('ล้างข้อมูลทั้งหมด (รายชื่อ + ผลรางวัล + ชื่องาน)?')) return;
-  S={eventName:'',eventLogo:'',prize:'',people:[]}; history=[]; current=null;
-  save(); render(); closeSetup(); toast('ล้างข้อมูลแล้ว');
+/* ── day helpers ── */
+function dayCfg(id){ return (EV.days||[]).find(d=>d.id===id)||{}; }
+function dayPeople(id){ return (ST.days[id]&&ST.days[id].people)||[]; }
+function selectDay(id){
+  if(rolling) return;
+  curDay=id; localStorage.setItem(LS_DAY,id); history=[]; current=null;
+  resetNameBox(); render();
 }
 
 /* ── draw ── */
-function eligible(){ return S.people.filter(p=>p.status==='pool'); }
+function eligible(){ return dayPeople(curDay).filter(p=>p.status==='pool'); }
 function draw(){
-  if(rolling) return;
+  if(rolling||!curDay) return;
   const pool=eligible();
-  if(!pool.length){ toast('จับครบทุกคนแล้ว 🎉 (ไปตั้งค่าเพื่อรีเซ็ต/เพิ่มรายชื่อ)'); return; }
+  if(!pool.length){ toast('วันนี้จับครบทุกคนแล้ว 🎉'); return; }
   rolling=true; current=null;
   $('decide').classList.add('hidden');
-  $('drawBtn').disabled=true; $('drawBtn').classList.add('rolling');
-  $('namebox').classList.add('rolling');
+  $('drawBtn').disabled=true; $('drawBtn').classList.add('rolling'); $('namebox').classList.add('rolling');
   $('placeholder').classList.add('hidden');
   const nm=$('nameMain'), og=$('nameOrg');
   nm.classList.remove('hidden','win'); og.classList.remove('hidden');
   const winner=pool[Math.floor(Math.random()*pool.length)];
-  // สุ่มไล่ชื่อ ชะลอลงเรื่อยๆ
   let delay=55, elapsed=0, total=2600;
   tickAudio();
   (function roll(){
     const r=pool[Math.floor(Math.random()*pool.length)];
-    nm.textContent=r.name; og.textContent=r.org||' ';
+    nm.textContent=r.name; og.textContent=r.org||' ';
     elapsed+=delay; delay*=1.11;
-    if(elapsed<total){ setTimeout(roll,delay); }
-    else landOn(winner);
+    if(elapsed<total) setTimeout(roll,delay); else landOn(winner);
   })();
 }
 function landOn(w){
   rolling=false; current=w;
   $('drawBtn').classList.remove('rolling'); $('namebox').classList.remove('rolling');
   const nm=$('nameMain'), og=$('nameOrg');
-  nm.textContent=w.name; nm.classList.add('win');
-  og.textContent=w.org||' ';
-  $('decide').classList.remove('hidden');
-  $('drawBtn').disabled=true;
-  dingAudio();
+  nm.textContent=w.name; nm.classList.add('win'); og.textContent=w.org||' ';
+  $('decide').classList.remove('hidden'); $('drawBtn').disabled=true; dingAudio();
 }
 function resolve(kind){
   if(!current) return;
-  const p=S.people.find(x=>x.id===current.id); if(!p) return;
-  history.push({id:p.id, prevStatus:p.status, prevPrize:p.prize});
-  if(kind==='won'){ p.status='won'; p.prize=S.prize||''; confetti(); $('tada').className='tada on'; setTimeout(()=>$('tada').className='tada',1400); toast('🎉 ยินดีด้วย! บันทึกผู้ได้รับรางวัลแล้ว'); }
-  else{ p.status='absent'; toast('ตัดชื่อออก (ไม่อยู่ในงาน)'); }
-  current=null; save(); render();
-  $('decide').classList.add('hidden');
-  $('nameMain').classList.add('hidden'); $('nameOrg').classList.add('hidden');
-  $('placeholder').classList.remove('hidden');
-  $('placeholder').innerHTML=eligible().length?'กด "สุ่มรายชื่อ" เพื่อจับคนต่อไป 🎲':'🎉 จับครบทุกคนแล้ว!';
+  const p=dayPeople(curDay).find(x=>x.key===current.key); if(!p) return;
+  history.push({key:p.key,status:p.status,prize:p.prize,ts:p.ts});
+  if(kind==='won'){
+    p.status='won'; p.prize=curPrize(); p.ts=new Date().toISOString();
+    confetti(); $('tada').className='tada on'; setTimeout(()=>$('tada').className='tada',1400);
+    toast('🎉 ยินดีด้วย! บันทึกผู้ได้รับรางวัลแล้ว');
+  } else { p.status='absent'; toast('ตัดชื่อออก (ไม่อยู่ในงาน)'); }
+  current=null; saveLocal(); scheduleSync(); render();
+  resetNameBox(eligible().length?'กด “สุ่มรายชื่อ” เพื่อจับคนต่อไป 🎲':'🎉 วันนี้จับครบทุกคนแล้ว!');
 }
 function undo(){
   if(!history.length){ toast('ไม่มีรายการให้ย้อนกลับ'); return; }
-  const h=history.pop(); const p=S.people.find(x=>x.id===h.id);
-  if(p){ p.status=h.prevStatus; p.prize=h.prevPrize; }
-  current=null; save(); render();
-  $('decide').classList.add('hidden');
-  $('nameMain').classList.add('hidden'); $('nameOrg').classList.add('hidden');
-  $('placeholder').classList.remove('hidden'); $('placeholder').innerHTML='ย้อนกลับแล้ว · กด "สุ่มรายชื่อ" ต่อได้เลย';
+  const h=history.pop(); const p=dayPeople(curDay).find(x=>x.key===h.key);
+  if(p){ p.status=h.status; p.prize=h.prize; p.ts=h.ts; }
+  current=null; saveLocal(); scheduleSync(); render();
+  resetNameBox('ย้อนกลับแล้ว · กด “สุ่มรายชื่อ” ต่อได้เลย');
   toast('ย้อนกลับรายการล่าสุดแล้ว');
 }
+function resetNameBox(msg){
+  $('decide').classList.add('hidden');
+  $('nameMain').classList.add('hidden'); $('nameOrg').classList.add('hidden');
+  $('placeholder').classList.remove('hidden');
+  if(msg!==undefined) $('placeholder').innerHTML=msg;
+}
+
+/* ── prize picker ── */
+function curPrize(){ const s=$('prizeSel'); return (s&&s.value)||''; }
+function onPrizeChange(){}
 
 /* ── render ── */
 function render(){
-  $('evtName').textContent=S.eventName||'carbonMICE Lucky Draw';
-  if(S.eventLogo){ $('evtLogo').src=S.eventLogo; $('evtLogoChip').style.display='flex'; }
-  else $('evtLogoChip').style.display='none';
-  if(S.prize){ $('prizeBanner').style.display='block'; $('prizeVal').textContent=S.prize; }
-  else $('prizeBanner').style.display='none';
-  const pool=S.people.filter(p=>p.status==='pool').length;
-  const won=S.people.filter(p=>p.status==='won');
-  const absent=S.people.filter(p=>p.status==='absent').length;
-  $('cPool').textContent=pool; $('cWon').textContent=won.length;
-  $('cAbsent').textContent=absent; $('cTotal').textContent=S.people.length;
+  $('evtName').textContent=EV.name||'carbonMICE Lucky Draw';
+  if(EV.logo){ $('evtLogo').src=EV.logo; $('evtLogoChip').style.display='flex'; } else $('evtLogoChip').style.display='none';
+  // day tabs
+  const dt=$('daytabs'); dt.innerHTML='';
+  (EV.days||[]).forEach(d=>{
+    const b=document.createElement('button'); b.className='daytab'+(d.id===curDay?' active':'');
+    b.onclick=()=>selectDay(d.id);
+    b.innerHTML=esc(d.label||'วัน')+(d.date?`<small>${esc(d.date)}</small>`:'');
+    dt.appendChild(b);
+  });
+  dt.style.display=(EV.days&&EV.days.length>1)?'flex':'none';
+  // prize picker
+  const prizes=EV.prizes||[]; const ps=$('prizeSel');
+  if(prizes.length){
+    $('prizePick').style.display='flex';
+    const keep=ps.value;
+    ps.innerHTML='<option value="">— ไม่ระบุ —</option>'+prizes.map(p=>`<option value="${escAttr(p)}">${esc(p)}</option>`).join('');
+    if([...ps.options].some(o=>o.value===keep)) ps.value=keep;
+  } else $('prizePick').style.display='none';
+  // counters (วันปัจจุบัน)
+  const ppl=dayPeople(curDay);
+  const pool=ppl.filter(p=>p.status==='pool').length;
+  const won=ppl.filter(p=>p.status==='won');
+  const absent=ppl.filter(p=>p.status==='absent').length;
+  $('cPool').textContent=pool; $('cWon').textContent=won.length; $('cAbsent').textContent=absent; $('cTotal').textContent=ppl.length;
   $('winCnt').textContent=won.length;
+  $('winDay').textContent=(EV.days&&EV.days.length>1)?('· '+(dayCfg(curDay).label||'')):'';
   $('drawBtn').disabled=rolling||pool===0;
   $('undoBtn').style.display=history.length?'block':'none';
-  if(!S.people.length){
-    $('placeholder').classList.remove('hidden'); $('nameMain').classList.add('hidden'); $('nameOrg').classList.add('hidden');
-    $('placeholder').innerHTML='กด "ตั้งค่า / รายชื่อ"<br>เพื่อเริ่มจับรางวัล 🎲';
-  }
-  // winners list (ล่าสุดอยู่บน)
+  if(!ppl.length) resetNameBox('วันนี้ยังไม่มีรายชื่อ — ติดต่อทีมงาน carbonMICE');
+  // winners list (เรียงตามเวลาได้รางวัล, ล่าสุดอยู่บน)
   const wl=$('winlist');
-  if(!won.length){ wl.innerHTML='<div class="empty">ยังไม่มีผู้ได้รับรางวัล</div>'; }
+  const ordered=won.slice().sort((a,b)=>(a.ts<b.ts?-1:a.ts>b.ts?1:0));
+  if(!ordered.length){ wl.innerHTML='<div class="empty">ยังไม่มีผู้ได้รับรางวัล</div>'; }
   else{
     wl.innerHTML='';
-    won.slice().reverse().forEach((p,i)=>{
+    ordered.slice().reverse().forEach((p,i)=>{
       const d=document.createElement('div'); d.className='win-item';
-      d.innerHTML=`<span class="rank num">${won.length-i}</span>
+      d.innerHTML=`<span class="rank num">${ordered.length-i}</span>
         <span class="who"><b>${esc(p.name)}</b>${p.org?`<small>${esc(p.org)}</small>`:''}</span>
         ${p.prize?`<span class="pz">🎁 ${esc(p.prize)}</span>`:''}`;
       wl.appendChild(d);
     });
   }
 }
-function esc(s){return String(s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
 
-/* ── fullscreen ── */
+/* ── background sync (replace-per-day) ── */
+let syncT=null, syncing=false, dirtyDays={};
+function scheduleSync(){ dirtyDays[curDay]=true; setSync('saving'); clearTimeout(syncT); syncT=setTimeout(flushSync,1400); }
+async function flushSync(){
+  if(syncing) return; const days=Object.keys(dirtyDays); if(!days.length){ return; }
+  syncing=true;
+  let allOk=true;
+  for(const did of days){
+    const won=dayPeople(did).filter(p=>p.status==='won').sort((a,b)=>(a.ts<b.ts?-1:1));
+    const payload={action:'syncWinners',id:EVENT_ID,dayId:did,dayLabel:(dayCfg(did).label||did),
+      winners:won.map(p=>({name:p.name,org:p.org,prize:p.prize,ts:p.ts}))};
+    try{
+      const r=await apiPost(payload);
+      if(r&&r.ok){ delete dirtyDays[did]; } else allOk=false;
+    }catch(e){ allOk=false; }
+  }
+  syncing=false;
+  if(allOk && !Object.keys(dirtyDays).length){ setSync('ok'); }
+  else { setSync('offline'); clearTimeout(syncT); syncT=setTimeout(flushSync,8000); } // retry
+}
+function setSync(s){
+  const el=$('syncPill');
+  if(s==='ok'){ el.textContent='🟢 บันทึกขึ้นระบบแล้ว'; el.style.color='var(--mint)'; }
+  else if(s==='saving'){ el.textContent='🟡 กำลังบันทึก…'; el.style.color='#FFD166'; }
+  else if(s==='offline'){ el.textContent='⚪ ออฟไลน์ · จะบันทึกเมื่อเน็ตกลับมา'; el.style.color='var(--slate)'; }
+  else el.textContent='•';
+}
+// best-effort sync ตอนออก/สลับแท็บ
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'&&Object.keys(dirtyDays).length) flushSync(); });
+window.addEventListener('online',()=>{ if(Object.keys(dirtyDays).length) flushSync(); });
+
+/* ── api ── */
+async function apiGet(qs){
+  const res=await fetch(CFG.API_URL+'?action='+qs,{method:'GET',redirect:'follow'});
+  return res.json();
+}
+async function apiPost(payload){
+  const res=await fetch(CFG.API_URL,{method:'POST',redirect:'follow',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+  return res.json();
+}
+
+/* ── fullscreen / toast ── */
 function toggleFull(){ if(!document.fullscreenElement){ document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen(); } else document.exitFullscreen&&document.exitFullscreen(); }
-
-/* ── toast ── */
 let toastT=null;
-function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2400); }
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
+function esc(s){return String(s==null?'':s).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+function escAttr(s){return esc(s).replace(/"/g,'&quot;');}
 
 /* ── confetti ── */
 const cv=$('fx'); let ctx,parts=[],raf=null;
@@ -430,7 +474,7 @@ function tick(){ ctx.clearRect(0,0,cv.width,cv.height);
   parts=parts.filter(p=>p.life<p.max&&p.y<cv.height+40);
   if(parts.length) raf=requestAnimationFrame(tick); else {ctx.clearRect(0,0,cv.width,cv.height);raf=null;}
 }
-addEventListener('resize',()=>{fit();render();});
+addEventListener('resize',()=>{ if(EV){fit();} });
 
 /* ── audio ── */
 let ac=null; function actx(){ if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}} return ac; }
@@ -446,10 +490,7 @@ function dingAudio(){ const a=actx(); if(!a)return; [523,659,784,1046].forEach((
   g.gain.exponentialRampToValueAtTime(.0001,t+.4);o.start(t);o.stop(t+.4);}); }
 
 /* keyboard: Space = draw */
-addEventListener('keydown',e=>{ if(e.code==='Space'&&!$('setup').classList.contains('show')&&$('setup').classList.contains('hidden')){ e.preventDefault(); if(!$('drawBtn').disabled) draw(); } });
-
-load(); render();
-if(!S.people.length) openSetup();
+addEventListener('keydown',e=>{ if(e.code==='Space'&&EV){ e.preventDefault(); if(!$('drawBtn').disabled) draw(); } });
 </script>
 </body>
 </html>
