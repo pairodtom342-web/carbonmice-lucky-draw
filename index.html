@@ -168,6 +168,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
     <div class="htools">
       <span class="syncpill" id="syncPill">•</span>
       <button class="tool" id="undoBtn" onclick="undo()" style="display:none">↩️ ย้อนกลับ</button>
+      <button class="tool" id="resetBtn" onclick="resetDay()" style="display:none">🔄 รีเซ็ตวันนี้</button>
       <button class="tool" onclick="toggleFull()">⛶ เต็มจอ</button>
     </div>
   </header>
@@ -247,6 +248,7 @@ async function init(){
       EV={id:EVENT_ID,name:localStorage.getItem(LS+'_name')||'carbonMICE Lucky Draw',logo:localStorage.getItem(LS+'_logo')||'',prizes:JSON.parse(localStorage.getItem(LS+'_prizes')||'[]'),days:JSON.parse(localStorage.getItem(LS+'_days')||'[]')};
       const saved=localStorage.getItem(LS_DAY);
       curDay=(EV.days||[]).some(d=>d.id===saved)?saved:((EV.days||[])[0]&&EV.days[0].id);
+      bindHistory();
       $('loading').classList.add('hidden'); $('app').classList.remove('hidden'); render(); setSync('offline');
       // มีข้อมูลค้างที่ยังไม่ sync → ลองดันขึ้นเมื่อเน็ตกลับ
       Object.keys(ST.days).forEach(did=>{ if(dayPeople(did).some(p=>p.status==='won')) dirtyDays[did]=true; });
@@ -282,21 +284,40 @@ function hydrate(){
       return {key:key,name:p.name,org:p.org||'',
         status:old?old.status:'pool', prize:old?old.prize:'', ts:old?old.ts:''};
     });
-    newDays[d.id]={people:people};
+    // เก็บประวัติ undo ต่อวัน (ย้อนกลับได้แม้หลังรีเฟรช)
+    newDays[d.id]={people:people, history:(ST.days[d.id]&&ST.days[d.id].history)||[]};
   });
   ST.days=newDays; saveLocal();
   // เลือกวัน
   const saved=localStorage.getItem(LS_DAY);
   curDay=(EV.days||[]).some(d=>d.id===saved)?saved:((EV.days||[])[0]&&EV.days[0].id);
+  bindHistory();
 }
+// ผูกตัวแปร history เข้ากับประวัติของวันปัจจุบัน (อ้างอิงตัวเดียวกัน → push/pop แล้ว saveLocal เก็บถาวร)
+function bindHistory(){ if(curDay&&ST.days[curDay]){ history=ST.days[curDay].history||(ST.days[curDay].history=[]); } else history=[]; }
 
 /* ── day helpers ── */
 function dayCfg(id){ return (EV.days||[]).find(d=>d.id===id)||{}; }
 function dayPeople(id){ return (ST.days[id]&&ST.days[id].people)||[]; }
 function selectDay(id){
   if(rolling) return;
-  curDay=id; localStorage.setItem(LS_DAY,id); history=[]; current=null;
+  curDay=id; localStorage.setItem(LS_DAY,id); current=null; bindHistory();
   resetNameBox(); render();
+}
+// รีเซ็ตการสุ่มทั้งวันปัจจุบัน (คืนทุกคนเข้ากล่อง + ล้างผู้ได้รางวัลของวันนี้ออกจาก DB ด้วย) — วันอื่น/รายชื่อไม่แตะ
+function resetDay(){
+  if(!curDay||!dayPeople(curDay).length){ toast('วันนี้ยังไม่มีรายชื่อ'); return; }
+  const ppl=dayPeople(curDay);
+  const drawn=ppl.filter(p=>p.status!=='pool').length;
+  if(!drawn){ toast('วันนี้ยังไม่ได้จับใคร'); return; }
+  const won=ppl.filter(p=>p.status==='won').length;
+  const lbl=(EV.days&&EV.days.length>1)?('“'+(dayCfg(curDay).label||'')+'” '):'';
+  if(!confirm('รีเซ็ตการสุ่มของวัน '+lbl+'ใหม่ทั้งหมด?\n\n• คืนทุกคนกลับเข้ากล่อง\n• ลบผู้ได้รางวัลของวันนี้ ('+won+' คน) ออกจากระบบด้วย\n\nกู้คืนไม่ได้ — วันอื่นและรายชื่อไม่ถูกแตะ')) return;
+  ppl.forEach(p=>{ p.status='pool'; p.prize=''; p.ts=''; });
+  history.length=0; current=null;
+  saveLocal(); scheduleSync(); render();   // scheduleSync → sync ผู้ได้รางวัลวันนี้ (ว่าง) ทับ DB
+  resetNameBox('รีเซ็ตวันนี้แล้ว · กด “สุ่มรายชื่อ” เริ่มใหม่ 🎲');
+  toast('รีเซ็ตการสุ่มของวันนี้แล้ว 🔄');
 }
 
 /* ── draw ── */
@@ -390,6 +411,7 @@ function render(){
   $('winDay').textContent=(EV.days&&EV.days.length>1)?('· '+(dayCfg(curDay).label||'')):'';
   $('drawBtn').disabled=rolling||pool===0;
   $('undoBtn').style.display=history.length?'block':'none';
+  $('resetBtn').style.display=(won.length||absent)?'block':'none';   // โชว์เมื่อมีการจับไปแล้วในวันนี้
   if(!ppl.length) resetNameBox('วันนี้ยังไม่มีรายชื่อ — ติดต่อทีมงาน carbonMICE');
   // winners list (เรียงตามเวลาได้รางวัล, ล่าสุดอยู่บน)
   const wl=$('winlist');
