@@ -118,7 +118,26 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .empty{color:var(--slate);text-align:center;padding:4vh 0;font-size:clamp(14px,2vh,18px)}
 
 @media (max-aspect-ratio:1/1){
-  .stage{flex-direction:column} .right{width:100%;max-width:none;max-height:32vh}
+  /* มือถือแนวตั้ง: ปลดล็อกความสูง + เปิด scroll ทั้งหน้า (จอ LED แนวนอนไม่โดน) */
+  html,body{height:auto;overflow:auto;-webkit-overflow-scrolling:touch}
+  #app{height:auto;min-height:100vh;padding:2vh 4vw 6vh}
+  .evt-name{max-width:52vw;font-size:clamp(15px,2vh,20px)}
+  .stage{flex-direction:column;margin-top:1.4vh}
+  .right{width:100%;max-width:none;max-height:none}
+  /* กล่องชื่อ: กำหนดความสูงจริง ไม่ให้ยุบ + ย่อ font ให้พอดีจอมือถือ */
+  .namebox{flex:none;min-height:32vh}
+  .name-main{font-size:clamp(30px,7.2vh,66px);letter-spacing:-.5px}
+  .name-org{font-size:clamp(14px,2.1vh,20px)}
+  .name-placeholder{font-size:clamp(18px,3vh,28px)}
+  /* ปุ่มสุ่ม/ตัดสิน: ความสูงคงที่ (min-vh เตี้ยลงบนจอเล็ก) ให้กดง่ายและไม่กินพื้นที่เกิน */
+  .draw-btn{min-height:60px;font-size:clamp(22px,3.4vh,32px)}
+  .decide{gap:3vw}
+  .decide button{min-height:56px;font-size:clamp(15px,2.4vh,20px)}
+  .counters{gap:2.4vw}
+  .stat .n{font-size:clamp(20px,3.4vh,32px)}
+  /* รายชื่อผู้ได้รางวัล: ปล่อยให้ยาวตามเนื้อหา แล้วเลื่อนทั้งหน้าแทน */
+  .panel{flex:none}
+  .winlist{max-height:none;overflow-y:visible}
 }
 
 /* loading / error screens */

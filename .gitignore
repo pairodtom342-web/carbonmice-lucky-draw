@@ -1,1 +1,6 @@
 .DS_Store
+
+# ข้อมูลผู้เข้าร่วม (PII) — ห้ามขึ้น GitHub
+Participants Event*/
+*_merged_*.csv
+luckydraw_import_*.txt
